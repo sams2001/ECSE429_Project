@@ -1,0 +1,298 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TOOLS: Postman Chrome Extension
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ENVIRONMENT: 
+	Mac OS 12.6
+	Screen resolution: 2560x1600
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PREPARATION: Postman refresh
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TESTER: Lee Brickman 260851285
+	lee.brickman@mail.mcgill.ca
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Build:
+java -jar runTodoManagerRestAPI-1.5.5.jar
+Valid Model Names -model=
+todoManager
+Model todoManager : Number of app versions available (e.g. -version=2, -versionName=profile1) are: 4
+1 - v0 : prototype
+2 - v1 : non compressed relationships with guids
+3 - v2 : compressed relationships with guids
+4 - v3 : compressed relationships with ids
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+Using model todoManager
+Will configure app as release version v3 : compressed relationships with ids
+Running on 4567
+ e.g. http://localhost:4567
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+START: 12:39, 2023-02-08
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DURATION: 45 minutes
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Test - 01: Return all the category items related to todo, with given id, by the relationship named categories, but do not provide specific id
+GET http://localhost:4567/todos/:id/categories
+Return: Status 200, time 9ms
+Body:
+{
+    "categories": [
+        {
+            "id": "1",
+            "title": "Office",
+            "description": ""
+        }
+    ]
+}
+Returns category with id "1", even though no specific id was provided, should instead inform user that providing a todo id is necessary
+
+Test - 02: Delete the instance of the relationship named categories between todo and category using the :id, but do not provide specific id
+DELETE http://localhost:4567/todos/:id/categories/:id
+Return: 404 Not Found, time 21ms
+Body:
+Body:
+{
+    "errorMessages": [
+        "Could not find any instances with todos/:id/categories/:id"
+    ]
+}
+Expected
+
+Test - 03: Delete the instance of the relationship named categories between todo and category using the id 1
+DELETE http://localhost:4567/todos/1/categories/1
+Return: 200, time 22ms
+Body:{}
+Successful delete, although body of return should note that object was deleted.
+
+Test - 04: Return all the category items related to todo, with given id 1, by the relationship named categories
+GET  http://localhost:4567/todos/1/categories/1
+Return: 404 Not Found, time 21ms
+Body:{}
+Expected.
+
+Test - 05: return all the todo items related to project, with given id, by the relationship named tasks, but do not provide a specific id
+GET http://localhost:4567/projects/:id/tasks
+Return: 200, 16ms
+Body: 
+{
+    "todos": [
+        {
+            "id": "2",
+            "title": "file paperwork",
+            "doneStatus": "false",
+            "description": "",
+            "tasksof": [
+                {
+                    "id": "1"
+                }
+            ]
+        },
+        {
+            "id": "1",
+            "title": "scan paperwork",
+            "doneStatus": "false",
+            "description": "",
+            "tasksof": [
+                {
+                    "id": "1"
+                }
+            ]
+        }
+    ]
+}
+Returns all todo items, even though no specific id was provided, should instead inform user that providing a project id is necessary
+
+Test - 06: Delete the instance of the relationship named tasks between project and todo using the :id, but do not provide specific id
+DELETE  http://localhost:4567/projects/:id/tasks/:id
+
+Return: 404 Not Found, 10ms
+Body:
+{
+    "errorMessages": [
+        "Could not find any instances with projects/:id/tasks/:id"
+    ]
+
+
+}
+Expected
+
+Test - 07: Delete the instance of the relationship named tasks between project and todo using the :id 1
+DELETE  http://localhost:4567/projects/1/tasks/1
+Return: 200 Ok, 9ms
+Body: {}
+Successful delete, although body of return should note that object was deleted.
+
+Test - 08: Return all the category items related to project, with given id (4), by the relationship named categories
+GET  http://localhost:4567/projects/4/categories
+Return: 200 Ok, 23ms
+Body: {
+    "categories": []
+}
+Expected as the project with id 4 does not exist, should likely make note of the project not existing rather than returning an empty list of categories
+
+Test - 09: Create an instance of a relationship named categories between project instance :id and the category instance represented by the id in the body of the message
+POST http://localhost:4567/projects/7/categories
+Return: 404 Not Found, 11ms
+Body:
+{
+    "errorMessages": [
+        "Could not find parent thing for relationship projects/7/categories"
+    ]
+Expected, as a project with id "7" does not exist.
+
+Test - 10: Create an instance of a relationship named projects between category instance :id and the project instance represented by the id in the body of the message
+POST http://localhost:4567/categories/52/projects
+Return: 404 Not Found, 14ms
+Body: 
+{
+    "errorMessages": [
+        "Could not find parent thing for relationship categories/52/projects"
+    ]
+}
+Expected, as category with id "52" does not exist.
+
+Test - 11: Create an instance of a relationship named projects between category instance :id "2" and the project instance represented by the id in the body of the message, use JSON body input.
+POST http://localhost:4567/categories/2/projects
+JSON Input:
+{
+  "title": "non proident, sunt i",
+  "completed": "false",
+  "active": "false",
+  "description": "atat non proident, s"
+}
+Return: 400 Bad Request, 12ms
+Body:
+{
+   "error messages":[
+	"Failed Validation: completed should be BOOLEAN, active should be BOOLEAN"
+	]
+}
+Somewhat expected, although this directly follows an example that the API documentation uses as JSON input.
+
+Test - 12:Create an instance of a relationship named categories between todo instance "1" and the category instance represented by the id in the body of the message, using JSON body input.
+POST http://localhost:4567/todos/1/categories
+JSON Input:
+{
+  "title": "g elit, sed do eiusm",
+  "description": "xercitation ullamcoa",
+  "id":"49"
+}
+Return: 404 Not Found, 319 ms
+Body:
+{
+    "errorMessages": [
+        "Could not find thing matching value for id"
+    ]
+}
+Bug
+
+Test - 13: Create an instance of a relationship named projects between category instance :id "2" and the project instance represented by the id in the body of the message, using XML body input
+POST http://localhost:4567/categories/2/projects
+XML Input:
+<project>
+  <active>false</active>
+  <description>atat non proident, s</description>
+  <id>2</id>
+  <completed>false</completed>
+  <title>non proident, sunt i</title>
+</project>
+Return: 404 Not Found, 35 ms
+Body:
+{
+    "errorMessages": [
+        "Could not find thing matching value for id"
+    ]
+}
+Bug
+
+Test - 14:create an instance of a relationship named categories between project instance :id "1" and the category instance represented by the id in the body of the message, using XML body input
+POST http://localhost:4567/projects/1/categories
+XML Input:
+<category>
+  <description>xercitation ullamcoa</description>
+  <id>3</id>
+  <title>g elit, sed do eiusm</title>
+</category>
+Return: 404 Not Found, 10 ms
+Body:
+{
+    "errorMessages": [
+        "Could not find thing matching value for id"
+    ]
+}
+Bug
+
+Test - 15: Create an instance of a relationship named categories between todo instance :id "1" and the category instance represented by the id in the body of the message, using XML body input
+POST http://localhost:4567/projects/1/categories
+XML Input:
+<category>
+  <description>xercitation ullamcoa</description>
+  <id>6</id>
+  <title>g elit, sed do eiusm</title>
+</category>
+Return: 404 Not Found, 9 ms
+Body:
+{
+    "errorMessages": [
+        "Could not find thing matching value for id"
+    ]
+}
+Bug
+
+Test - 16: Amend a specific instance of category using a id "2" with a body containing the fields to amend, using XML body input
+PUT http://localhost:4567/categories/2
+XML Input:
+<category>
+  <description>xercitation ullamcoa</description>
+  <id>12</id>
+  <title>g elit, sed do eiusm</title>
+</category>
+Return: 200 OK, 22ms
+Body:
+{
+    "id": "2",
+    "title": "g elit, sed do eiusm",
+    "description": "xercitation ullamcoa"
+}
+Doesn't seem to have actually appended the id
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Expected
+SUMMARY:
+Exploratory testing of the interoperability revealed evident bugs and problems within the application.
+While some issues found may not necessarily be classified as bugs, they were identified as errors. 
+Exploratory testing shed light upon the lack of ease of use of the API, as well as improperly defined API calls in the documentation portion of the application. 
+POST and PUT functions that use JSON or XML body input often fail. Successful deletions should be noted in the return body.
+GET calls that do not specify ids, or GET functions that use ids that do not exist often return all available instances, instead of
+noting that the inputted id is invalid. 
+Issues encountered were:
+- Test 1 returned category items even though no specific todo id was provided.
+- Test 3 preformed a successful deletion, but the contents of the return body do not indicate the deletion.
+- Test 5 returned all todo items, even though a specific project id was not provided.
+- Test 7 preformed a successful deletion, but the contents of the return body do not indicate the deletion.
+- Test 8 returned an empty category list, rather than informing that the entered id does not exist in the system.
+- Test 11 reveals a minor syntax issue in the API documentation.
+- Test 12 fails to create the relationship instance with JSON input body.
+- Test 13 fails to create the relationship instance with XML input body.
+- Test 14 fails to create the relationship instance with XML input body.
+- Test 15 fails to create the relationship instance with XML input body.
+- Test 16 does not seem to have actually appended the category id.
+
+Future testing:
+	- Further testing of POST functionality, particularly with respect to different input body formats (text, HTML, JavaScript) 
+	- Further testing of PUT functionality
