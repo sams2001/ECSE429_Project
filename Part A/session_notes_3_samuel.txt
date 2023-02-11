@@ -1,0 +1,169 @@
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TOOLS: Postman Chrome Extension
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ENVIRONMENT: 
+	Mac OS 12.6
+	Screen resolution: 2560x1600
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PREPARATION: Postman refresh
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TESTER: Sam Snodgrass (260852485)
+	Samuel.snodgrass@mail.mcgill.ca
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+BUILD: 
+java -jar runTodoManagerRestAPI-1.5.5.jar
+Valid Model Names -model=
+todoManager
+Model todoManager : Number of app versions available (e.g. -version=2, -versionName=profile1) are: 4
+1 - v0 : prototype
+2 - v1 : non compressed relationships with guids
+3 - v2 : compressed relationships with guids
+4 - v3 : compressed relationships with ids
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+Using model todoManager
+Will configure app as release version v3 : compressed relationships with ids
+Running on 4567
+ e.g. http://localhost:4567
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+START: 12:51 PM 02/08/2023
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DURATION: 45 minutes
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Test - 01: Retrieve all categories
+GET http://localhost:4567/categories
+Return: Status 200, time 174ms
+JSON object with 2 categories, Home/Office
+
+
+Test - 02: Retrieve a category by non-existent id
+GET http://localhost:4567categories/0
+Return: Status 404, time 165ms
+Error message, could not retrieve category
+
+
+Test - 03: Retrieve a category by an existing id
+GET http://localhost:4567/categories/1
+Return: Status 200, time 50ms
+successfully displays category with id=1
+
+
+Test - 04: Create a new category
+POST http://localhost:4567/categories
+Body:
+{
+    "title": "School",
+    "description": "testing"
+}
+Return: Status 201, time 108ms
+Successfully created new category
+
+
+Test - 05: Create a new category with empty body
+POST http://localhost:4567/categories
+Body: empty
+Return: Status 400, time=47ms
+Failure, "title" field is mandatory
+
+
+Test - 06: Create a new category with an empty description
+POST http://localhost:4567/categories
+Body: 
+{
+    "title": "SchoolAgain"
+}
+Return: Status 201, time=75ms
+New category created with an empty description
+
+
+Test - 07: Retrieve all categories again
+GET http://localhost:4567/categories
+Return: Status 200, time 38ms
+4 categories retrieved successfully
+
+
+Test - 08: Create category with duplicate title
+POST http://localhost:4567/categories
+Body: 
+{
+    "title": "SchoolAgain"
+}
+Return: Status 201, time=68ms
+Duplicate category created
+
+
+Test - 09: Update category description and title
+POST http://localhost:4567/categories/7
+Body:
+{
+	"title":"NotSchool",
+	"description":"testing"
+}
+Return: Status 200, time 36ms
+Category with id 7 updated description and title
+
+
+Test - 10: Update category description and title
+PUT http://localhost:4567/categories/7
+Body:
+{
+	"title":"SchoolAgain",
+	"description":""
+}
+Return: Status 200, time 21ms
+Category with id 7 updated description and title
+
+
+Test - 11: Update category by non-existing id
+PUT http://localhost:4567/categories/0
+Body:
+{
+	"title":"SchoolAgain",
+	"description":""
+}
+Return: Status 404, time 34ms
+Error message, no category for id=0
+
+
+Test - 12: Delete category by non-existing id
+DELETE http://localhost:4567/categories/0
+Return: Status 404, time 48ms
+No category found to delete
+
+
+Test - 13: Delete category by id
+DELETE http://localhost:4567/categories/7
+Return: Status 200, time 49ms
+Category deleted
+
+
+Test - 14: Retrieve todos by category id
+GET http://localhost:4567/categories/1/todos
+Return: Status 200, time 42ms
+Successfully return list of todo items
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+SUMMARY:
+get, post, put, delete functions work as expected for category
+Issues encountered were:
+- Test 13 did not show info regarding a successful delete request other than 200 status, not a bug but bad design decision
+- Test 8, was able to create a category that had a duplicate title, not a bug but bad design decision
+- Test 6, can create a category with an empty description field, not a bug but bad design decision
