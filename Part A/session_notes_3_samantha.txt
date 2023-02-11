@@ -1,0 +1,151 @@
+CHARTER: Identify documented and undocumented “rest api todo list manager” capabilities.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+AREA: Capabilities related to todos, projects, categories and interoperability
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TOOLS: Postman
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ENVIRONMENT: macOS Big Sur
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+PREPARATION: Postman refresh
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+TESTER: Samantha Handal (260983914)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+DEPLOYED WITH: java -jar runTodoManagerRestAPI-1.5.5.jar
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+START: 8:42 PM Feb 9, 2023
+DURATION: 45 minutes
+
+TEST NOTES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+8:42 Booted up application
+GET /todos: got all the prefilled todos 
+
+test relationahips documented under "API Documentation" 
+
+8:43 projects : category => project
+GET /projects/1/categories
+returns null
+
+8:45 
+GET /categories
+two categories exist: id=1 (home), id=2 (office)
+
+8:46
+GET categories/1/projects
+returns null
+
+8:48 create a relationship between categories and projects
+POST /categories/1/projects
+creates a new project with id=3
+
+8:49 check to see if it appears in projects
+GET /projects/3/categories
+returns an empty set of categories, not bi-directional
+
+8:50 try to make a category within projects
+POST projects/1/categories?title=school
+error message -> "title : field is mandatory"
+
+8:53
+what if we want to amend an existing project to a category?
+PUT /projects/1/categories/1
+405 Method Not Allowed
+
+8:55
+GET /projects/1/categories
+still returns empty set
+
+8:56
+GET /categories/1/projects
+only returns the new project 3 created earlier
+
+8:59 try to amend within categories...
+PUT /categories/1/projects/1
+405 Method Not Allowed
+
+9:00
+GET /categories/1/projects
+only returns the new project 3 created earlier, unsuccessful
+
+9:05 categories : todo => category && todos : category => todo
+GET /todos
+use todo id=1 to test, has a relationship to category id=1
+
+9:06
+GET /todos/1/categories
+todo id=1 has category "office", which is also linked to project 3
+
+9:08
+GET /categories/1/todos
+empty set of todos, bi-directional association does not show
+
+9:09 if it doesn't show, can we still delete it?
+DELETE /categories/1/todos/1
+404 Not Found
+
+9:10 try from todos side...
+DELETE /todos/1/categories/1
+successful
+
+9:13 check to see if it just deleted the association
+GET /categories
+"office" category is still there
+
+9:16 tasks/tasksof : project =(tasks)=> todo / todo =(tasksof)=> project
+GET /projects/1/tasks
+returns 2 todos, "scan paperwork" id=1 and "file paperwork" id=2
+
+9:18 see if "scan paperwork" also holds the association
+GET todos/1/tasksof
+returns project "Office Work", successful
+
+9:21 try to delete association
+DELETE /todos/1/tasksof/1
+successful
+
+9:22 try to delete again same association
+DELETE /todos/1/tasksof/1
+404 Not Found, successful
+
+9:25 try to create association again
+POST /todos/1/tasksof/1
+404 Not Found
+
+9:26 try to create association again without id
+POST /todos/1/tasksof
+creates a new project without name or description, when in 
+use if you make a mistake you should be able to append todo to project
+
+9:27 shutdown app...
+GET /shutdown
+Error: socket hang up
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Application (forced) closed at around 9:27 PM.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+SUMMARY:
+You can't add an existing project to a category or vice verca, also projects
+only exist within categories.
+
+FUTURE TESTING:
+	- Test with NULL values
+	- Verify correct HTTP status code
+	- Verify response headers
