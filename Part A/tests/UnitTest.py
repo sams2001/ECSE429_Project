@@ -48,7 +48,9 @@ def test_projects_header():
     assert 'Content-Type' in response.headers
     assert response.headers['Content-Type'] == 'application/json'
 
+
 ### GET ###
+
 def test_get_todos():
     response = requests.get('http://localhost:4567/todos')
     assert response.status_code == 200
@@ -104,6 +106,39 @@ def test_post_category_json():
 
 
 ### GET BY ID ###
+
+def test_get_todos():
+    response = requests.get('http://localhost:4567/todos/1')
+    assert response.status_code == 200
+    assert 'todos' in response.json()
+
+def test_get_projects():
+    response = requests.get('http://localhost:4567/projects/1')
+    assert response.status_code == 200
+    assert 'projects' in response.json()
+
+def test_get_categories():
+    response = requests.get('http://localhost:4567/categories/1')
+    assert response.status_code == 200
+    assert 'categories' in response.json()
+
+
+### GET BY NON-EXISTENT ID ###
+
+def test_get_todos():
+    response = requests.get('http://localhost:4567/todos/0')
+    assert response.status_code == 404
+    assert 'errorMessages' in response.json()
+
+def test_get_projects():
+    response = requests.get('http://localhost:4567/projects/0')
+    assert response.status_code == 404
+    assert 'errorMessages' in response.json()
+
+def test_get_categories():
+    response = requests.get('http://localhost:4567/categories/0')
+    assert response.status_code == 404
+    assert 'errorMessages' in response.json()
 
 
 ### CATEGORY & TODO RELATIONSHIP ###
