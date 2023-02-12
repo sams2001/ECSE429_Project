@@ -1,9 +1,19 @@
-import pytest
+
 import requests
 import json
-import subprocess
 
 url = 'http://localhost:4567/projects'
+
+json_payload = """
+{
+    "title": "Home Activities",
+    "completed": False,
+    "active": False,
+    "description": ""
+}"""
+
+json_header = {"Content-Type": "application/json"}
+
 
 def test_projects_header():
     response = requests.head(url)
@@ -27,13 +37,7 @@ def test_get_project_failure():
     assert 'errorMessages' in response.json()
 
 def test_post_project_json():
-    new_project_json = json.dumps({
-        "title": "Home Activities",
-        "completed": False,
-        "active": False,
-        "description": ""
-        })
-    response = requests.post(url,data=new_project_json,headers={"Content-Type": "application/json"})
+    response = requests.post(url,data=json_payload,headers=json_header)
     assert response.status_code == 201 #Create
     projects = requests.get(url).json()["projects"]
     assert response.json() in projects
@@ -47,7 +51,9 @@ def test_delete_task():
     assert response.status_code == 404
 
 def test_delete_project():
-    response = requests.delete(url + "/2")
+    post = requests.post(url,data=json_payload,headers=json_header)
+    id_to_delete = post.json()["id"]
+    response = requests.delete(url + "/"+id_to_delete)
     assert response.status_code == 200
 
 def test_delete_project_failure():

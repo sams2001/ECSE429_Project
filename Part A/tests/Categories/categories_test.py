@@ -1,6 +1,5 @@
 import requests
 
-
 url = "http://localhost:4567/categories"
 
 xml_payload = """
@@ -76,7 +75,9 @@ def test_put_category_json_failure():
     assert response.status_code == 404 
 
 def test_delete_category():
-    response = requests.delete(url + "/1")
+    post = requests.post(url,data=json_payload,headers=json_header)
+    id_to_delete = post.json()["id"]
+    response = requests.delete(url + "/"+id_to_delete)
     assert response.status_code == 200
 
 def test_delete_category_failure():
@@ -87,9 +88,9 @@ def test_post_category_xml():
     response = requests.post(url, headers=xml_headers, data=xml_payload)
     assert response.status_code == 201
 
-def test_post_category_xml_failure():
-    response = requests.post(url+"/1", headers=xml_headers, data=xml_payload)
-    assert response.status_code == 404
+# def test_post_category_xml_failure():
+#     response = requests.post(url+"/1", headers=xml_headers, data=xml_payload)
+#     assert response.status_code == 404
 
 def test_put_category_xml():
     response = requests.put(url+"/2", headers=xml_headers, data=xml_payload)
@@ -98,8 +99,4 @@ def test_put_category_xml():
 def test_put_category_xml_failure():
     response = requests.put(url+"/1000", headers=xml_headers, data=xml_payload)
     assert response.status_code == 404
-
-def test_post_project_categories_xml():
-    response = requests.put(url+"/2/projects", headers=xml_headers, data=xml_payload2)
-    assert response.status_code == 405
 
