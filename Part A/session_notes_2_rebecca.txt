@@ -2,6 +2,10 @@ CHARTER: Identify capabilities and areas of potential instability of the “rest
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+ENVIRONMENT: MacOS 12.1
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 TOOLS: Postman
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
