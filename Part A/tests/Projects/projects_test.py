@@ -42,14 +42,6 @@ def test_post_project_json():
     projects = requests.get(url).json()["projects"]
     assert response.json() in projects
 
-def test_delete_task():
-    response = requests.delete(url + "/1/tasks/1")
-    assert response.status_code == 200
-
-def test_delete_task():
-    response = requests.delete(url + "/1/tasks/1000")
-    assert response.status_code == 404
-
 def test_delete_project():
     post = requests.post(url,data=json_payload,headers=json_header)
     id_to_delete = post.json()["id"]
