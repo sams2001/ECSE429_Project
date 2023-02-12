@@ -16,12 +16,12 @@ def test_get_projects():
     assert response.status_code == 200
     assert 'projects' in response.json()
 
-def test_get_projects():
+def test_get_project():
     response = requests.get(url+'/1')
     assert response.status_code == 200
     assert 'projects' in response.json()
 
-def test_get_projects():
+def test_get_project_failure():
     response = requests.get(url+'/1000')
     assert response.status_code == 404
     assert 'errorMessages' in response.json()
