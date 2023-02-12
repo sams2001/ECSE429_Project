@@ -298,11 +298,17 @@ Application closed at around 10:55 PM. Extra time for writing and cleaning sessi
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-SUMMARY:
-	Simple get, post, put, delete functions work as expected or basically as expected for todos, categories and projects.
+SUMMARY - What we learned, what concerns do we have:
+	Simple get, post, put, delete functions work as expected or basically as expected for todos, categories and projects. 
+	Strange behavior exhibited when new todos are created. The id's seem to have jumped many numbers. Otherwise, normal. Therefore the relationship between todos, categories and projects was lightly tested, revealing a bug.
 	Relationship of projects to todos logical
+		If a todo is deleted, a project containing that todo will no longer show it.
 	Relationship of todos to categories illogical 
+		If a category is deleted, and a todo had been associated to that category, then the todo still has that assocation. Shows that the association is not with a category but just an integer that represents the category id. A real association should be made.
 
 
 FUTURE TESTING:
 	Explore more about relationship between instances and fields.
+	Further test boundary cases.
+	
+- No files created. JSON outputs are included in notes.
