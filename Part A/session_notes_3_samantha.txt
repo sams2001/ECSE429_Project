@@ -142,8 +142,8 @@ Application (forced) closed at around 9:27 PM.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 SUMMARY:
-Adding an existing project to a category or vice versa with the syntax used above is not valid and throws errors. No undocumented functionality found.
-Other testing needed to verify to test project-category associations according to the API documentation.
+Adding an existing project to a category or vice versa with the syntax used above is not valid and throws errors.
+Other testing needed to verify to test project-category associations with JSON and XML input, as these calls are not valid.
 category => project relationship confirmed, and the opposite direction shown to be false as documented.
 
 FUTURE TESTING:
