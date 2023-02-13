@@ -51,5 +51,5 @@ def test_delete_project():
 def test_delete_project_failure():
     response = requests.delete(url + "/1000")
     assert response.status_code == 404
-
+    assert 'errorMessages' in response.json()
 

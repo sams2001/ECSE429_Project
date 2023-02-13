@@ -26,6 +26,12 @@ xml_payload2 = """
 </project>
 """
 
+xml_faulty_payload = """
+<category> 
+    <description> yes this is a description </description> 
+</category>
+"""
+
 xml_headers = {'Content-Type': 'application/xml'}
 
 def test_categories_header():
@@ -45,9 +51,12 @@ def test_get_category():
     assert 'categories' in response.json()
 
 def test_get_category_failure():
+    number_categories_pre = len(requests.get(url).json()["categories"])
     response = requests.get(url+'/0')
     assert response.status_code == 404
     assert 'errorMessages' in response.json()
+    number_categories_post = len(requests.get(url).json()["categories"])
+    assert number_categories_post == number_categories_pre
 
 def test_post_category_json():
     response = requests.post(url,data=json_payload,headers=json_header)
@@ -62,9 +71,13 @@ def test_post_category_json_duplicate():
     assert response.json() in categories
 
 def test_post_category_json_fail():
+    number_categories_pre = len(requests.get(url).json()["categories"])
     response = requests.post(url,data="",headers=json_header)
     assert response.status_code == 400 
     assert 'errorMessages' in response.json()
+    number_categories_post = len(requests.get(url).json()["categories"])
+    assert number_categories_post == number_categories_pre
+
 
 def test_put_category_json():
     response = requests.put(url+'/2',data=json_payload, headers=json_header)
@@ -77,20 +90,32 @@ def test_put_category_json_failure():
 def test_delete_category():
     post = requests.post(url,data=json_payload,headers=json_header)
     id_to_delete = post.json()["id"]
+    number_categories_pre = len(requests.get(url).json()["categories"])
     response = requests.delete(url + "/"+id_to_delete)
     assert response.status_code == 200
+    number_categories_post = len(requests.get(url).json()["categories"])
+    assert number_categories_post == number_categories_pre -1
 
 def test_delete_category_failure():
+    number_categories_pre = len(requests.get(url).json()["categories"])
     response = requests.delete(url + "/1000")
     assert response.status_code == 404
+    number_categories_post = len(requests.get(url).json()["categories"])
+    assert number_categories_pre == number_categories_post
 
 def test_post_category_xml():
+    number_categories_pre = len(requests.get(url).json()["categories"])
     response = requests.post(url, headers=xml_headers, data=xml_payload)
     assert response.status_code == 201
+    number_categories_post = len(requests.get(url).json()["categories"])
+    assert number_categories_pre +1 == number_categories_post 
 
-# def test_post_category_xml_failure():
-#     response = requests.post(url+"/1", headers=xml_headers, data=xml_payload)
-#     assert response.status_code == 404
+def test_post_category_faulty_xml():
+    number_categories_pre = len(requests.get(url).json()["categories"])
+    response = requests.post(url, headers=xml_headers, data=xml_faulty_payload)
+    assert 'field is mandatory' in str(response.json())
+    number_categories_post = len(requests.get(url).json()["categories"])
+    assert number_categories_pre == number_categories_post 
 
 def test_put_category_xml():
     response = requests.put(url+"/2", headers=xml_headers, data=xml_payload)
@@ -99,4 +124,3 @@ def test_put_category_xml():
 def test_put_category_xml_failure():
     response = requests.put(url+"/1000", headers=xml_headers, data=xml_payload)
     assert response.status_code == 404
-

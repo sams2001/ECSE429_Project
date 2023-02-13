@@ -12,6 +12,14 @@ xml_payload = """
 </category>
 """
 
+xml_payload_id = """
+<category> 
+    <id>3</id>
+    <description> yes this is a description </description> 
+    <title> this is the title </title>
+</category>
+"""
+
 json_header = {"Content-Type": "application/json"}
 
 json_payload = """
@@ -45,22 +53,14 @@ json_todo_payload = """
 }
 """
 
+
+"""documented relationship : category => project"""
 def test_post_project_categories_json():
     post = requests.post(url+"categories",data=json_category_payload,headers=json_header)
     id_to_use = post.json()["id"]
     response = requests.post(url+"categories/"+id_to_use+"/projects", headers=json_header, data=json_category_payload)
     assert response.status_code == 201
-
-def test_post_category_project():
-    post = requests.post(url+"projects",data=json_project_payload,headers=json_header)
-    id_to_use = post.json()["id"]
-    post2 = requests.post(url+"categories",data=json_category_payload,headers=json_header)
-    id_category = post2.json()["id"]    
-    json_body = json.dumps({
-    "id": f"{id_category}",
-    })
-    response = requests.post(url+"projects/"+id_to_use+"/categories", headers=json_header, data=json_body)
-    assert response.status_code == 201
+    assert response.json() in requests.get(url + "projects").json()["projects"]
 
 def test_post_project_categories_xml():
     post = requests.post(url+"categories",data=json_category_payload,headers=json_header)
@@ -74,6 +74,37 @@ def test_post_project_categories_failure():
     response = requests.post(url+"projects/"+id_to_use+"/categories", headers=json_header, data=json_payload)
     assert response.status_code == 400
 
+""" relationship: project => category"""
+def test_post_category_project_json():
+    post = requests.post(url+"projects",data=json_project_payload,headers=json_header)
+    id_to_use = post.json()["id"]
+    post2 = requests.post(url+"categories",data=json_category_payload,headers=json_header)
+    id_category = post2.json()["id"]    
+    json_body = json.dumps({
+    "id": f"{id_category}",
+    })
+    response = requests.post(url+"projects/"+id_to_use+"/categories", headers=json_header, data=json_body)
+    assert response.status_code == 201
+
+
+"""Expected behaviour of bug"""
+def test_post_category_project_xml():
+    post = requests.post(url+"projects",data=json_project_payload,headers=json_header)
+    id_to_use = post.json()["id"]
+    post2 = requests.post(url+"categories", headers=xml_headers, data=xml_payload_id)
+    response = requests.post(url+"projects/"+id_to_use+"/categories", headers=xml_headers, data=xml_payload_id)
+    assert response.status_code == 201
+    #BUG: "could not find matching id" for category when creating association between category and project, even though the id exists.
+
+"""Actual behaviour of bug"""
+def test_post_category_project_xml_real_behavior():
+    post = requests.post(url+"projects",data=json_project_payload,headers=json_header)
+    id_to_use = post.json()["id"]
+    response = requests.post(url+"projects/"+id_to_use+"/categories", headers=xml_headers, data=xml_payload_id)
+    assert response.status_code == 404
+
+
+""" relationship: todos => categories """
 def test_post_category_todo():
     post = requests.post(url+"todos",data=json_todo_payload,headers=json_header)
     id_todo = post.json()["id"]
@@ -84,6 +115,7 @@ def test_post_category_todo():
         })
     post3 = requests.post("http://localhost:4567/todos/"+id_todo+"/categories", data=json_body, headers=json_header)
     assert post3.status_code == 201
+    
 
 def test_post_category_todo_fail():
     json_body = json.dumps({
@@ -109,7 +141,6 @@ def test_post_todo_category_fail():
         })
     post3 = requests.post("http://localhost:4567/categories/1/todos", data=json_body, headers=json_header)
     assert post3.status_code == 404
-
 
 def test_get_todos_by_category():
     response = requests.get('http://localhost:4567/categories/1/todos')
@@ -150,8 +181,17 @@ def test_delete_category_todo():
     post3 = requests.post("http://localhost:4567/todos/"+id_todo+"/categories", data=json_body, headers=json_header)
     response = requests.delete(url+ "todos/"+id_todo+"/categories/"+id_category)
     assert response.status_code == 200
+    assert requests.get(url+ "todos/"+id_todo+"/categories/"+id_category).status_code == 404
 
-def test_get_categories_by_todoId():
+"""Expected behaviour of bug"""
+def test_get_category_by_todo_and_id():
+    response = requests.get(url+'todos/1/categories/1')
+    assert response.status_code == 404
+    assert 'errorMessages' in response.json()
+    #BUG: fails because it cannot find a category from a todo even if the category is associated to the todo, while this should be documented.
+
+"""Actual behaviour of bug"""
+def test_get_category_by_todo_and_id_real_behavior():
     response = requests.get(url+'todos/1/categories/1')
     assert response.status_code == 404
 
@@ -162,6 +202,7 @@ def test_get_todos_by_category_unspecified():
 def test_delete_projects_tasks_unspecified_failure():
     response = requests.delete(url+"projects/:id/tasks/:id")
     assert response.status_code == 404
+    assert 'errorMessages' in response.json()
 
 def test_delete_task():
     post = requests.post(url+"todos",data=json_todo_payload,headers=json_header)
@@ -178,3 +219,5 @@ def test_delete_task():
 def test_delete_task_failure():
     response = requests.delete(url + "projects/1/tasks/1000")
     assert response.status_code == 404
+    assert 'errorMessages' in response.json()
+
