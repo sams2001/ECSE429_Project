@@ -62,7 +62,7 @@ POST projects/1/categories?title=school
 error message -> "title : field is mandatory"
 
 8:53
-what if we want to amend an existing project to a category?
+what if we want to append an existing project to a category?
 PUT /projects/1/categories/1
 405 Method Not Allowed
 
@@ -70,66 +70,42 @@ PUT /projects/1/categories/1
 GET /projects/1/categories
 still returns empty set
 
-8:56
+9:00
 GET /categories/1/projects
 only returns the new project 3 created earlier
 
-8:59 try to amend within categories...
+9:05 try to append within categories...
 PUT /categories/1/projects/1
 405 Method Not Allowed
 
-9:00
+9:08
 GET /categories/1/projects
 only returns the new project 3 created earlier, unsuccessful
 
-9:05 categories : todo => category && todos : category => todo
+9:10 categories : todo => category && todos : category => todo
 GET /todos
 use todo id=1 to test, has a relationship to category id=1
 
-9:06
+9:15
 GET /todos/1/categories
 todo id=1 has category "office", which is also linked to project 3
 
-9:08
+9:18
 GET /categories/1/todos
 empty set of todos, bi-directional association does not show
 
-9:09 if it doesn't show, can we still delete it?
+9:19 if it doesn't show, can we still delete it?
 DELETE /categories/1/todos/1
 404 Not Found
 
-9:10 try from todos side...
+9:20 try from todos side...
 DELETE /todos/1/categories/1
 successful
 
-9:13 check to see if it just deleted the association
+9:25 check to see if it just deleted the association
 GET /categories
 "office" category is still there
 
-9:16 tasks/tasksof : project =(tasks)=> todo / todo =(tasksof)=> project
-GET /projects/1/tasks
-returns 2 todos, "scan paperwork" id=1 and "file paperwork" id=2
-
-9:18 see if "scan paperwork" also holds the association
-GET todos/1/tasksof
-returns project "Office Work", successful
-
-9:21 try to delete association
-DELETE /todos/1/tasksof/1
-successful
-
-9:22 try to delete again same association
-DELETE /todos/1/tasksof/1
-404 Not Found, successful
-
-9:25 try to create association again
-POST /todos/1/tasksof/1
-404 Not Found
-
-9:26 try to create association again without id
-POST /todos/1/tasksof
-creates a new project without name or description, when in 
-use if you make a mistake you should be able to append todo to project
 
 9:27 shutdown app...
 GET /shutdown
@@ -142,7 +118,7 @@ Application (forced) closed at around 9:27 PM.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 SUMMARY:
-Adding an existing project to a category or vice versa with the syntax used above is not valid and throws errors.
+Adding an existing project to a category or vice versa is not allowed and throws errors.
 Other testing needed to verify to test project-category associations with JSON and XML input, as these calls are not valid.
 category => project relationship confirmed, and the opposite direction shown to be false as documented.
 
@@ -151,3 +127,4 @@ FUTURE TESTING:
 	- Test with NULL values
 	- Verify correct HTTP status code
 	- Verify response headers
+	- Test tasks
