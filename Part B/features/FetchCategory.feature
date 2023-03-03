@@ -4,23 +4,23 @@ Feature: Create a Category
 
   #Normal Flow
   Scenario Outline: Fetch and retrieve category
-    Given a category with <id> exists in the system
-    When a user fetches a category by providing the category <id>
-    Then the system will return the category and its corresponding <id>, <description>, and <title>
+    Given at least one category exists in the system
+    When a user fetches a category by providing the category id
+    Then the system will return the category and its corresponding id, <description>, and <title>
     Examples:
-      |title           |description                                   |id|
-      |Registration    |relating to registering for courses           |65|
-      |Project Planning|relating to planning and logistics of projects|2 |
+      |title           |description                                   |
+      |Registration    |relating to registering for courses           |
+      |Project Planning|relating to planning and logistics of projects|
 
   #Alternate Flow
   Scenario Outline: Attempting to fetch a specific category without providing an id
     Given at least one category exists in the system
     When a user fetches a category without providing the specific id of the category
-    Then all categories in the system and their corresponding <id>, <description>, and <title> will be returned
+    Then all categories in the system and their corresponding id, <description>, and <title> will be returned
     Examples:
-      |title           |description                                   |id|
-      |Registration    |relating to registering for courses           |65|
-      |Project Planning|relating to planning and logistics of projects|2 |
+      |title           |description                                   |
+      |Registration    |relating to registering for courses           |
+      |Project Planning|relating to planning and logistics of projects|
 
   #Error flow
   Scenario Outline: Attempting to fetch a category by using an id that does not exist

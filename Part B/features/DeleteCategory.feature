@@ -3,14 +3,10 @@ Feature: Delete a Category
   As a user, I want to delete a category, so that it no longer exists in the system
 
   #Normal Flow
-  Scenario Outline: Delete a category
-    Given a category with <id> exists in the system
-    When a user elects to delete a category by correctly providing the category <id>
-    Then the category with <id> will be removed from the system
-    Examples:
-      |id|
-      |65|
-      |2 |
+  Scenario: Delete a category
+    Given at least one category exists in the system
+    When a user elects to delete a category by correctly providing the category id
+    Then the category with the provided id will be removed from the system
 
   #Error Flow
   Scenario Outline:Attempting to delete a category by providing the incorrect id
@@ -21,7 +17,7 @@ Feature: Delete a Category
       |incorrectId|
       |90909099090|
       |""         |
-     #Error Flow
+      #Error Flow
   Scenario: Attempting to delete a category by providing the no id
     Given there are existent categories in the system
     When  a user elects to delete a category, but does not specify a category id

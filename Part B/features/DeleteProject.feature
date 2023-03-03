@@ -3,14 +3,10 @@ Feature: Delete a Project
   As a user, I want to delete a project, so that it no longer exists in the system
 
   #Normal Flow
-  Scenario Outline: Delete a project
-    Given a project with <id> exists in the system
-    When a user elects to delete a project by correctly providing the project <id>
-    Then the project with <id> will be removed from the system
-    Examples:
-      |id|
-      |11|
-      |12|
+  Scenario: Delete a project
+    Given project(s) exist in the system
+    When a user elects to delete a project by correctly providing the project id
+    Then the project with the provided id will be removed from the system
 
   #Error Flow
   Scenario Outline: Attempting to delete a project by providing the incorrect id
