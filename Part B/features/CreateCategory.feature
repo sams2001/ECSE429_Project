@@ -26,7 +26,7 @@ Feature: Create a Category
   Scenario Outline: Attempting to create a category without providing a title, or an empty string as the title
     Given the project is running
     When a user attempts to create a new category but provides a <blankTitle>, and a valid <description>
-    Then no new item is created
+    Then no new item is created, and an error message "title : field is mandatory" is returned
     Examples:
       | blankTitle | description|
       | ""    |not sure what this will be so I'll leave the title blank for now|
