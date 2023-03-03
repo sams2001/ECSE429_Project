@@ -16,7 +16,7 @@ Feature: Delete a Project
     Examples:
       |incorrectId|
       |20000000000|
-      |""         |
+      |90909090909|
   #Error Flow
   Scenario: Attempting to delete a project by providing no id
     Given there are existent projects in the system

@@ -16,11 +16,11 @@ Feature: Delete a Category
     Examples:
       |incorrectId|
       |90909099090|
-      |""         |
+      |20000000000|
       #Error Flow
   Scenario: Attempting to delete a category by providing the no id
     Given there are existent categories in the system
     When  a user elects to delete a category, but does not specify a category id
-    Then no project will be removed from the system, a "404 Not Found" Error occurs, and the return statement is blank
+    Then no category will be removed from the system, a "404 Not Found" Error occurs, and the return statement is blank
 
 
