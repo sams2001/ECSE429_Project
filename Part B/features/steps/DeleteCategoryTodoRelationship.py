@@ -59,6 +59,7 @@ def step_impl(context,todoid,categoryid):
             assert categoryid not in str(todo)
         except AssertionError:
             print("ERROR: Despite API documentation stating otherwise, todo and category relationship is a one-way relationship.")
+            assert False
     finally:    
         assert response_todo.status_code == 200
 
@@ -89,7 +90,7 @@ def step_impl(context,todoid,categoryid):
         assert response.status_code==200
     except AssertionError:
         print("ERROR: Despite API documentation stating otherwise, todo and category relationship is a one-way relationship.")
-
+        assert False
 
 @given(u'that todo with id {todoid} does not exist in the system')
 def step_impl(context,todoid):

@@ -94,6 +94,7 @@ def step_impl(context,todoid,categoryid):
         assert todoid in str(response)
     except AssertionError:
         print("ERROR: Despite API documentation stating otherwise, todo and category relationship is a one-way relationship.")
+        assert False
 
 @when(u'a new todo is created with a relationship to category {categoryid}')
 def step_impl(context,categoryid):
