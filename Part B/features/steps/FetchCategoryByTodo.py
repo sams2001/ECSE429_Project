@@ -31,7 +31,7 @@ def step_impl(context,todoid,categoryids):
     categoryidlst = categoryids.strip().split(',')
     for categoryid in categoryidlst:
         try:
-            assert categoryid in response.json()['categories'][0]
+            assert categoryid in response.json()['categories']
         except AssertionError:
             json_data = {
                 "id": categoryid
@@ -66,15 +66,18 @@ def step_impl(context,categoryids):
     """
     categoryidlst = categoryids.strip().split(',')
     for categoryid in categoryidlst:
+        print(str(categoryid))
         response = requests.get(url+'categories/'+categoryid)
         if response.status_code == 404:
+            print("posting " + str(categoryid))
             json_1 = {
                 "title": "Work",
                 "description": ""
             }
             response1 = requests.post(url+'categories',data=json.dumps(json_1),headers=json_header)
             assert response1.status_code == 201 
-            response = requests.get(url+'/'+categoryid)
+            response = requests.get(url+'categories/'+categoryid)
+            print(str(response.status_code))
         assert response.status_code == 200
 
 

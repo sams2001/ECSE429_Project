@@ -19,7 +19,7 @@ def step_impl(context,id):
         }
         response1 = requests.post(url+'categories',data=json.dumps(json_1),headers=json_header)
         assert response1.status_code == 201 
-        response = requests.get(url+'/'+id)
+        response = requests.get(url+'/categories/'+id)
     assert response.status_code == 200
     
 
@@ -44,7 +44,7 @@ def step_impl(context,id):
                 ]
             }
             response1 = requests.post(url+'todos',data=json.dumps(json_2),headers=json_header)
-            newid = int(response1.json()['todos'][0]['id'])
+            newid = int(response1.json()['id'])
             assert response1.status_code == 201 
             response = requests.get(url+'/'+id)
     response = requests.get(url+'todos/'+id)
