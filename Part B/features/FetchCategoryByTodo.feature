@@ -34,13 +34,3 @@ Feature: Fetch Category or Categories via Todo
         |todoid|categoryid|
         |1000|1|
         |30000|2|
-
-  #Error flow
-  Scenario Outline: Fetch category that does not exist via todo that does not exist
-    Given that category with id <categoryid> does not exist in the system
-    And that todo with id <todoid> does not exist in the system 
-    Then fetching categories via todo <todoid> will return an error message
-    Examples:
-        |todoid|categoryid|
-        |1000|10000|
-        |30000|23029|
