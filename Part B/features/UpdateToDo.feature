@@ -8,9 +8,9 @@ Feature: Update a Todo
     When a user updates a todo by providing the todo id and updated <description>, <title>, <doneStatus>, <taskOf>, and <categories> associated
     Then the system will append the changed fields and return the todo and its corresponding id, <description>, <title>, <doneStatus>, <taskOf>, and <categories> associated with the todo
     Examples:
-      |title           |description                                   |title |doneStatus|taskOf   |categories|
-      |Registration    |relating to registering for courses           |title1|FALSE     |"id": "1"|"id": "1" |
-      |Project Planning|relating to planning and logistics of projects|title2|TRUE      |"id": "2"|"id": "2" |
+      |title           |description                                   |doneStatus|taskOf   |categories|
+      |Registration    |relating to registering for courses           |FALSE     |"id": "1"|"id": "1" |
+      |Project Planning|relating to planning and logistics of projects|TRUE      |"id": "2"|"id": "2" |
 
   #Alternate Flow
   Scenario Outline: Updating a todo without providing all fields
@@ -18,9 +18,9 @@ Feature: Update a Todo
     When a user updates a todo by providing the todo id and updated <title>
     Then the system will append the changed <title> and return the todo and its corresponding information, the description will be set to an empty string, the doneStatus will be set to false, the task and category relationships will be voided
     Examples:
-      |title           |title |
-      |Registration    |title1|
-      |Project Planning|title2|
+      |title           |
+      |Registration    |
+      |Project Planning|
 
 
   #Error flow
