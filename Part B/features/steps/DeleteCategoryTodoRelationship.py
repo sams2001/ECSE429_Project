@@ -25,7 +25,7 @@ def step_impl(context,todoid, categoryid):
         assert response.status_code == 201
 
         response_todo = requests.get(url+'todos/'+todoid)
-        todo = response_todo.json()['todos'][0]['categories'][0]
+        todo = response_todo.json()['todos'][0]['categories']
         assert response_todo.status_code == 200
         assert categoryid in str(todo)
 
@@ -112,5 +112,5 @@ def step_impl(context,todoid,categoryid):
     :type categoryid: str
     """
     response = requests.delete(url+'todos/'+todoid+'/categories/'+categoryid)
-    assert 'errorMessage' in str(response.json())
-    assert response.status_code == 400
+    assert 'errorMessages' in str(response.json())
+    assert response.status_code == 404

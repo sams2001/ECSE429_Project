@@ -32,7 +32,7 @@ def step_impl(context,id):
     response = requests.get(url+'todos/'+id)
     if response.status_code != 200:
         newid=0
-        while response.status_code != 200 and newid < id:
+        while response.status_code != 200 and newid < int(id):
             json_2 = {
                 "title": "delete paperwork",
                 "doneStatus": False,
