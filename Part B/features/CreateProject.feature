@@ -16,13 +16,13 @@ Feature: Create a Category
   Scenario Outline:
     Given the project is running
     When a user attempts to create a new project by providing an <unnecessaryId> in the call statement
-    Then no new project will be created, and an error with the error message "No such project entity instance with GUID or ID 56 found" will be returned
+    Then no new project will be created, and an error with the error message "No such project entity instance with GUID or ID <unnecessaryId> found" will be returned
     Examples:
     |unnecessaryId|
     |56           |
     |57           |
   #Alternate Flow
-  Scenario : Create a project with blank fields
+  Scenario: Create a project with blank fields
     Given the project is running
     When  a user creates a new project without entering information into any of the fields
     Then a new project is created with an auto-generated id, a false completed status, a false active status, and all other fields blank
