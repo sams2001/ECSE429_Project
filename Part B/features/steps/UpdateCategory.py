@@ -1,6 +1,8 @@
 import requests
 from behave import *
 import json
+import os
+import subprocess
 
 
 url = 'http://localhost:4567/categories'
@@ -12,7 +14,6 @@ json_1 = """{
 
 json_header = {"Content-Type": "application/json"}
 
-
 @given(u'the application is running')
 def step_impl(context):
     """
@@ -20,6 +21,8 @@ def step_impl(context):
     """
      
     response = requests.get('http://localhost:4567')
+    if response.status_code != 200:
+        subprocess.call(['java', '-jar', 'runTodoManagerRestAPI-1.5.5.jar'])
     assert response.status_code == 200
     assert 'Content-Type' in response.headers
     assert response.headers['Content-Type'] == 'text/html'
@@ -32,12 +35,6 @@ def step_impl(context):
     """
      
     response = requests.get(url+'/1')
-    if (response.status_code != 200):
-        response = requests.post(url,data=json_1,headers=json_header)
-        assert response.status_code == 201 #Create
-        categories = requests.get(url).json()["categories"]
-        assert response.json() in categories
-        response = requests.get(url+'/1')
     assert response.status_code == 200
     assert 'categories' in response.json()
 
@@ -105,3 +102,12 @@ def step_impl(context):
     response = requests.get(url+'/10000')
     assert response.status_code == 404
     assert 'errorMessages' in response.json()
+
+
+def after_all(context):
+    """
+    :type context: behave.runner.Context
+    """
+    os.system("npx kill-port 4567")
+    response = requests.get('http://localhost:4567')
+    assert response.status_code == 404
