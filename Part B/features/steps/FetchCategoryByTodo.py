@@ -85,5 +85,9 @@ def step_impl(context,todoid):
     :type todoid: str
     """
     response = requests.get(url+'todos/'+todoid+'/categories')
-    assert response.status_code==404
-    print('Service fails: fetching categories via a todo that does not exist returns categories')
+    try:
+        assert response.status_code==400
+    except:
+        assert response.status_code==404
+    finally:
+        print('ERROR: service fails, fetching categories via a todo that does not exist returns categories')

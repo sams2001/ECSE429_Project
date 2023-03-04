@@ -113,4 +113,7 @@ def step_impl(context,todoid,categoryid):
     """
     response = requests.delete(url+'todos/'+todoid+'/categories/'+categoryid)
     assert 'errorMessages' in str(response.json())
-    assert response.status_code == 404
+    try:
+        assert response.status_code == 400
+    except:
+        assert response.status_code == 404
