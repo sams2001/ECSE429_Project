@@ -2,7 +2,6 @@ Feature: Update a pre-existing category's field/s
 
     As a user, I want to update a category's fields, so that I do not have to delete and create a new category.
 
-
     Background:
         Given the application is running
 

@@ -29,10 +29,10 @@ Feature: Create relationship between category and todo
 
     #Error flow
     Scenario Outline: Adding a relationship between an existing todo and non-existing category
-    Given that category with id <categoryid> exists in the system
+    Given that category with id <categoryid> does not exist in the system
     When a new todo is created with a relationship to category <categoryid>
     Then the new todo will not have a relation to category <categoryid>
     Examples:
       |categoryid |
-      |1 |
-      |3 |
+      |1000 |
+      |3000 |
