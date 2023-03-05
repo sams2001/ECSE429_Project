@@ -31,7 +31,7 @@ def step_impl(context,todoids):
                 response1 = requests.post(url+'todos',data=json.dumps(json_2),headers=json_header)
                 newid = int(response1.json()['id'])
                 assert response1.status_code == 201 
-                response = requests.get(url+'/'+id)
+                response = requests.get(url+'todos/'+id)
         response = requests.get(url+'todos/'+id)
         assert response.status_code == 200
 
@@ -126,11 +126,9 @@ def step_impl(context,projectid):
                 "tasks": []
             }
             response1 = requests.post(url+'projects',data=json.dumps(project_payload),headers=json_header)
-            print(str(response1.json()))
             newid = int(response1.json()['id'])
             assert response1.status_code == 201 
             response = requests.get(url+'projects/' + projectid)
-        print(str(response.json()))
         assert 'tasks' not in str(response.json()['projects'][0])
 
 
