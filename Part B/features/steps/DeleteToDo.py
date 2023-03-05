@@ -9,7 +9,7 @@ json_header = {"Content-Type": "application/json"}
 test_id = 0
 
 
-@given("at least one todo exists in the system")
+@given("existing todos in the system")
 def step_impl(context):
     """
     :type context: behave.runner.Context

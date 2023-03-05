@@ -6,6 +6,8 @@ url = 'http://localhost:4567/todos'
 
 json_header = {"Content-Type": "application/json"}
 
+todo_id = None
+
 
 @given("the project is running")
 def step_impl(context):
@@ -31,6 +33,8 @@ def step_impl(context, title, doneStatus, description):
     }
 
     request = requests.post(url, data=json.dumps(todo_item), headers=json_header)
+    global todo_id
+    todo_id = request.json()["id"]
     assert (request.status_code == 201)
 
 
@@ -63,16 +67,31 @@ def step_impl(context, title, doneStatus, description):
     :type description: str
     :type doneStatus: str
     """
+    r = requests.get(url + f"/{todo_id}")
+    todo = r.json()["todos"][0]
+    created = False
+
+    if todo["title"] == title and todo["description"] == description and todo["doneStatus"] == doneStatus.lower():
+        created = True
+
+    assert (r.status_code == 200 and created)
+
+
+@then("a new todo is created with {title}, a null description, a false done status, and an auto-generated id")
+def step_impl(context, title):
+    """
+        :type context: behave.runner.Context
+        :type title: str
+    """
     r = requests.get(url)
     todos = r.json()["todos"]
     created = False
 
     for todo in todos:
-        if todo["title"] == title and todo["description"] == description and todo["doneStatus"] == doneStatus.lower():
+        if todo["title"] == title and todo["description"] == "" and todo["doneStatus"] == "false":
             created = True
 
     assert (r.status_code == 200 and created)
-
 
 @then("no new item is created")
 def step_impl(context):

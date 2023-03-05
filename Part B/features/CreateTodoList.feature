@@ -16,7 +16,7 @@ Feature: Create a todo list for classes
   Scenario Outline: Create a todo with a title, but null fields
     Given the project is running
     When a user creates a new todo by providing a valid <title>, and leaves the description and done status blank
-    Then a new category is created with <title>, a null description, a "false" done status, and an auto-generated id
+    Then a new todo is created with <title>, a null description, a false done status, and an auto-generated id
     Examples:
       |title                |
       |void Description     |

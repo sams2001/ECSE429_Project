@@ -18,12 +18,11 @@ def step_impl(context):
     project = {
         "title": "test title project",
         "description": "test description project",
-        "completed": "false",
-        "active": "false"
+        "completed": False,
+        "active": False
     }
 
     request = requests.post(url, data=json.dumps(project), headers=json_header)
-
     global test_id
     test_id = request.json()["id"]
 
