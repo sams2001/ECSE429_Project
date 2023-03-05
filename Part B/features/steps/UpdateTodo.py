@@ -74,7 +74,6 @@ def step_impl(context, title):
     r = requests.get(url + f"/{todo_id}")
     todo = r.json()["todos"][0]
     updated = False
-    print(todo)
 
     if todo["title"] == title and todo["description"] == "" and todo["doneStatus"] == "false":
         updated = True

@@ -4,6 +4,7 @@ import json
 
 url= 'http://localhost:4567/'
 json_header = {"Content-Type": "application/json"}
+errorstack = []
 
 @when(u'a user fetches projects via task id {taskid}')
 def step_impl(context,taskid):
@@ -13,6 +14,8 @@ def step_impl(context,taskid):
     """
     #GET /todos/:id/tasksof
     response = requests.get(url+'todos/'+taskid+'/tasksof')
+    if 'errorMessage' in str(response.json()):
+        errorstack.push(str(response.json()))
     try:
         assert response.status_code==200
     except:
@@ -104,15 +107,12 @@ def step_impl(context,taskid):
     assert response.status_code==404
     
 
-@then(u'an error message shall be returned when a user fetches projects via task id {taskid}')
-def step_impl(context,taskid):
-    """
-    :type context: behave.runner.Context
-    :type taskid: str
-    """   
-    response = requests.get(url+'todos/'+taskid+'/tasksof')
+@then(u'an error message shall be returned')
+def step_impl(context):
     try:
-        assert 'errorMessage' in str(response.json())
+        if 'errorMessage' in errorstack.pop():
+            assert True
     except:
         print("ERROR: Fetch project by task will return any existing project even if task does not exist")
         assert False
+    

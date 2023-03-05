@@ -12,10 +12,13 @@ Feature: Fetch a Category
       |Registration    |relating to registering for courses           |
 
   #Alternate Flow
-  Scenario: Fetch a specific category without providing an id
+  Scenario Outline: Fetch a specific category without providing an id
     Given existing categories in the system
     When a user fetches all categories
-    Then all categories in the system will be returned
+    Then the system will return all categories and their corresponding id, <description>, and <title>
+    Examples:
+      |title           |description                                   |
+      |Registration    |relating to registering for courses           |
 
   #Error flow
   Scenario Outline: Attempting to fetch a category by using an id that does not exist
