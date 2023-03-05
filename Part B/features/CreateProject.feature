@@ -12,7 +12,7 @@ Feature: Create a Project
       |Diet Plan       |Dieting plan and logistics|TRUE     |FALSE |
       |API Testing     |Part B of API testing     |FALSE    |TRUE  |
 
-  #Error Flow EX:http://localhost:4567/projects/56
+  #Error Flow
   Scenario Outline:
     Given the project is running
     When a user attempts to create a new project by providing an <unnecessaryId> in the call statement
@@ -22,10 +22,15 @@ Feature: Create a Project
     |56           |
     |57           |
   #Alternate Flow
-  Scenario: Create a project with blank fields
+  Scenario Outline: Create a project with blank fields
     Given the project is running
     When  a user creates a new project without entering information into any of the fields
-    Then a new project is created with an auto-generated id, a false completed status, a false active status, and all other fields blank
+    Then a new project is created with an auto-generated id, a false <completed> status, a false <active> status, a blank <title>, and a blank <description>
+    Examples:
+      |title           |description               |completed|active|
+      |""              |""                        |FALSE    |FALSE |
+
+
 
 
 

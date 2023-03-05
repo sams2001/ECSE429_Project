@@ -85,9 +85,8 @@ def step_impl(context):
     assert request.status_code == 201
 
 
-@then(
-    "a new project is created with an auto-generated id, a false completed status, a false active status, "
-    "and all other fields blank")
+@then("a new project is created with an auto-generated id, a false {completed} status, a false {active} status, a blank {title}, and a blank {description}")
+
 def step_impl(context):
     r = requests.get(url)
     projects = r.json()["projects"]
