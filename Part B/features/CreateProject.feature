@@ -1,4 +1,4 @@
-Feature: Create a Category
+Feature: Create a Project
 
   As a user, I want to create a project, so I can organize todos and tasks inside the project
 
