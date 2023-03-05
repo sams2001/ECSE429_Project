@@ -17,7 +17,7 @@ Feature: Update a pre-existing project's field/s
 
     #Alternate Flow
     Scenario Outline: Update a project's fields to empty
-          Given a project with id "<id>" exists
+        Given a project with id "<id>" exists
         When a user initiates the update of the project with id "<id>" to title "<title>", completed status "<completedStatus>", active status "<activeStatus>", and description "<description>"
         Then the project with id "<id>" will have title "<title>", completed status "<completedStatus>", active status "<activeStatus>", and description "<description>"
         Examples:

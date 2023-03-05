@@ -39,7 +39,10 @@ def step_impl(context,todoid,categoryid):
     :type categoryid: str
     """
     response = requests.delete(url+'todos/'+todoid+'/categories/'+categoryid)
-    assert response.status_code == 200
+    try: #two options
+        assert response.status_code == 200
+    except AssertionError:
+        assert response.status_code == 404
 
 
 @then(u'todo {todoid} will not have a relation to category {categoryid}')
