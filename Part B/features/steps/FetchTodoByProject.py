@@ -15,9 +15,11 @@ def step_impl(context,todoids):
     todoidlst = todoids.strip().split(',')
     for id in todoidlst:
         response = requests.get(url+'todos/'+id)
+        print(str(response.json()))
         if response.status_code != 200:
             newid=0
-            while response.status_code != 200 and newid < int(id):
+            while response.status_code != 200 and newid <= int(id):
+                print("posting")
                 json_2 = {
                     "title": "delete paperwork",
                     "doneStatus": False,
@@ -30,7 +32,10 @@ def step_impl(context,todoids):
                 }
                 response1 = requests.post(url+'todos',data=json.dumps(json_2),headers=json_header)
                 newid = int(response1.json()['id'])
+                print("posted with id " + str(newid))
+                print(str(requests.get(url+'todos').json()))
                 assert response1.status_code == 201 
+                print(str(response1.status_code))
                 response = requests.get(url+'todos/'+id)
         response = requests.get(url+'todos/'+id)
         assert response.status_code == 200
@@ -144,3 +149,12 @@ def step_impl(context,projectid):
         assert 'tasks' not in str(response.json()['projects'][0])
     except:
         assert len(response.json()['projects'][0]['tasks']) == 0
+
+@then(u'an error message will be returned upon the request for project {projectid} tasks')
+def step_impl(context,projectid):
+    """
+    :type context: behave.runner.Context
+    :type projectid: str
+    """
+    response = requests.get(url+'projects/'+projectid)
+    assert 'errorMessage' in str(response.json())

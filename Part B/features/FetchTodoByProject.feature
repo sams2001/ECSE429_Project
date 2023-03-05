@@ -11,7 +11,7 @@ Feature: Fetch Todo or Todos via Project
     Examples:
         |projectid|taskids|
         |1|1,2|
-        |2|3|
+        |2|2|
 
   #Alternate Flow: 
   Scenario Outline: Fetch todo by a project with no todos
@@ -20,11 +20,14 @@ Feature: Fetch Todo or Todos via Project
     Then no tasks related to project <projectid> shall be returned
     Examples:
         |projectid|
-        |3|
+        |4|
 
   #Error flow
   Scenario Outline: Fetch todo by a project with no todos
-    Given a project with id <id> does not exist
+    Given a project with id <projectid> does not exist
     When a user fetches tasks via project with project id <projectid>
     Then an error message will be returned upon the request for project <projectid> tasks
+    Examples:
+        |projectid|
+        |100|
 
