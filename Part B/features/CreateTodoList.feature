@@ -1,4 +1,4 @@
-Feature: Create a todo list for classes
+Feature: Create a todo item for classes
 
   As a user, I want to create a todo item, so that I can track a list of tasks to complete
 
