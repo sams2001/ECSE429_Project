@@ -65,7 +65,7 @@ def step_impl(context):
     assert r.status_code == 200
 
 
-@then("all categories in the system will be returned")
+@then("the system will return all categories and their corresponding id, <description>, and <title>")
 def step_impl(context):
     """
     :type context: behave.runner.Context
