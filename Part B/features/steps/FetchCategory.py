@@ -71,9 +71,8 @@ def step_impl(context):
     :type context: behave.runner.Context
     """
     categories = context.request["categories"]
-    print(categories)
 
-    assert len(categories) != 0
+    assert len(categories) > 1
 
 
 @given("there are no categories with {incorrectId} in the system")

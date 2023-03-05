@@ -94,7 +94,6 @@ def step_impl(context):
     created = False
 
     for project in projects:
-        print(project)
         if project["title"] == "" and project["description"] == "" and project["completed"] == \
                 "false" and project["active"] == "false":
             created = True
