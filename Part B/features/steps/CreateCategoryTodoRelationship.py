@@ -158,5 +158,5 @@ def step_impl(context,categoryid):
     newtodo = todoslst[len(todoslst)-1]
     try:
         assert categoryid not in newtodo['categories']
-    except AssertionError:
+    except:
         assert 'categories' not in str(newtodo)
