@@ -23,10 +23,11 @@ Feature: Fetch Project or Projects via Todo
         |1|
         |3|
 
-   #Alternate Flow: 
+   #Error Flow: 
    Scenario Outline: Fetch project by a todo with no related projects
     Given todo with id <taskid> does not exist
-    Then an error message shall be returned when a user fetches projects via task id <taskid>
+    When a user fetches projects via task id <taskid>
+    Then an error message shall be returned
     Examples:
         |taskid|
         |17|
