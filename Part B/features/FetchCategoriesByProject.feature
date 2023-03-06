@@ -13,7 +13,7 @@ Feature: Fetch Categories by Project
       |1,2  |1        |
       |3    |2        |
 
-  #Error Flow #http://localhost:4567/projects/:id/categories
+  #Alternate Flow #http://localhost:4567/projects/:id/categories
   Scenario Outline: Attempting to fetch categories without providing a specific category id
     Given their is at least one project in the system with associated categories
     When a user fetches the categories of a project without specifying the project id

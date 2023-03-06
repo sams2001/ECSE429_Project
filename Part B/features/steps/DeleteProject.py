@@ -9,17 +9,21 @@ json_header = {"Content-Type": "application/json"}
 test_id = 0
 
 
-@given("project(s) exist in the system")
-def step_impl(context):
+@given("project(s) exist in the system with a {title}, {description}, {completed} status, and {active} status")
+def step_impl(context, title, description, completed, active):
     """
     :type context: behave.runner.Context
+    :type title: str
+    :type description: str
+    :type completed: str
+    :type active: str
     """
 
     project = {
-        "title": "test title project",
-        "description": "test description project",
-        "completed": False,
-        "active": False
+        "title": title,
+        "description": description,
+        "completed": json.loads(completed.lower()),
+        "active": json.loads(active.lower())
     }
 
     request = requests.post(url, data=json.dumps(project), headers=json_header)
