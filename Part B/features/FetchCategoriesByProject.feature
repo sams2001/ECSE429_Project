@@ -13,7 +13,7 @@ Feature: Fetch Categories by Project
       |1,2  |1        |
       |3    |2        |
 
-  #Error Flow #http://localhost:4567/projects/:id/categories
+  #Error Flow
   Scenario Outline: Attempting to fetch categories without providing a specific category id
     Given their is at least one project in the system with associated categories
     When a user fetches the categories of a project without specifying the project id
@@ -23,7 +23,7 @@ Feature: Fetch Categories by Project
       |1    |
 
 
-  #Error Flow http://localhost:4567/projects/THISISNOTANID/categories
+  #Error Flow
   Scenario Outline: Attempting to fetch categories by providing an id that does not exist
     Given there are no projects with <incorrectId> in the system
     When a user elects to fetch all categories related to a project by providing the <incorrectId>

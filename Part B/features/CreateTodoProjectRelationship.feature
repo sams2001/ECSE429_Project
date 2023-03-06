@@ -5,7 +5,7 @@ Feature: Create relationship between project and todo
   Background:
     Given the application is running
 
-  #Normal Flow: POST /projects/:id/tasks
+  #Normal Flow:
   Scenario Outline: Create relationship between existing project and existing todo via /projects
     Given todo with id <todoid> exists in the system with no relationship to project <projectid>
     Given a project with id <projectid> exists in the system
@@ -17,7 +17,7 @@ Feature: Create relationship between project and todo
         |1|3|
         |2|1,2|
 
-  #Alternate Flow: POST /todos/:id/tasksof
+  #Alternate Flow:
   Scenario Outline: Create relationship between existing project and existing todo via /todos
     Given todo with id <todoid> exists in the system with no relationship to project <projectid>
     Given a project with id <projectid> exists in the system
