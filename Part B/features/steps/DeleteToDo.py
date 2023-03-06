@@ -9,25 +9,6 @@ json_header = {"Content-Type": "application/json"}
 test_id = 0
 
 
-@given("existing todos in the system")
-def step_impl(context):
-    """
-    :type context: behave.runner.Context
-    """
-
-    todo = {
-        "title": "test title todo",
-        "description": "test description todo"
-    }
-
-    request = requests.post(url, data=json.dumps(todo), headers=json_header)
-
-    global test_id
-    test_id = request.json()["id"]
-
-    assert (request.status_code == 201)
-
-
 @given("there is no existent todo with {incorrectId} in the system")
 def step_impl(context, incorrectId):
     """
@@ -94,3 +75,25 @@ def step_impl(context):
     """
     assert 'Could not find any instances with todos/:id' in context.error_request.json()["errorMessages"]
     assert context.error_request.status_code == 404
+
+
+@given("existing todos in the system with {title}, {doneStatus}, {description}")
+def step_impl(context, title, doneStatus, description):
+    """
+    :type context: behave.runner.Context
+    :type title: str
+    :type doneStatus: str
+    :type description: str
+    """
+    todo = {
+        "title": title,
+        "description": description,
+        "doneStatus": json.loads(doneStatus.lower())
+    }
+
+    request = requests.post(url, data=json.dumps(todo), headers=json_header)
+
+    global test_id
+    test_id = request.json()["id"]
+
+    assert (request.status_code == 201)

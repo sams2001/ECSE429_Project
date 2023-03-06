@@ -17,7 +17,7 @@ Feature: Delete a Project
       |incorrectId|
       |20000000000|
       |90909090909|
-  #Error Flow
+  #Alternate Flow
   Scenario: Attempting to delete a project by providing no id
     Given project(s) exist in the system
     When  a user elects to delete a project, but does not specify a project id

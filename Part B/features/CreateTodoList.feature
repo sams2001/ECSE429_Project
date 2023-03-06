@@ -29,3 +29,4 @@ Feature: Create a todo item for classes
     Examples:
       | title | doneStatus | description | id |
       | ECSE429 registration | False | register for class and tutorial sections | 100000 |
+      | ECSE428 class work | True | finish deliverable | 100000 |

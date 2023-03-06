@@ -3,12 +3,16 @@ Feature: Delete a Category
   As a user, I want to delete a category, so that it no longer exists in the system
 
   #Normal Flow
-  Scenario: Delete a category
-    Given at least one category exists in the system
+  Scenario Outline: Delete a category
+    Given a category exists in the system with <title> and <description>
     When a user elects to delete a category by correctly providing the category id
     Then the category with the provided id will be removed from the system
+    Examples:
+      | title            | description                                    |
+      | Registration     | relating to registering for courses            |
+      | Project Planning | relating to planning and logistics of projects |
 
-  #Error Flow
+  #Alternate Flow
   Scenario Outline:Attempting to delete a category by providing the incorrect id
     Given there is no existent category with <incorrectId> in the system
     When a user elects to delete a category by providing the <incorrectId>
@@ -17,10 +21,14 @@ Feature: Delete a Category
       |incorrectId|
       |90909099090|
       |20000000000|
+
       #Error Flow
-  Scenario: Attempting to delete a category by providing the no id
-    Given at least one category exists in the system
+  Scenario Outline: Attempting to delete a category by providing the no id
+    Given a category exists in the system with <title> and <description>
     When  a user elects to delete a category, but does not specify a category id
     Then no category will be removed from the system, a "404 Not Found" Error occurs, and the return statement is blank
-
+    Examples:
+      | title            | description                                    |
+      | Registration     | relating to registering for courses            |
+      | Project Planning | relating to planning and logistics of projects |
 

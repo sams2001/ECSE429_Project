@@ -9,15 +9,17 @@ json_header = {"Content-Type": "application/json"}
 test_id = 0
 
 
-@given("at least one category exists in the system")
-def step_impl(context):
+@given("a category exists in the system with {title} and {description}")
+def step_impl(context, title, description):
     """
     :type context: behave.runner.Context
+    :type title: str
+    :type description: str
     """
 
     category = {
-        "title": "test title",
-        "description": "test description"
+        "title": title,
+        "description": description
     }
 
     request = requests.post(url, data=json.dumps(category), headers=json_header)
