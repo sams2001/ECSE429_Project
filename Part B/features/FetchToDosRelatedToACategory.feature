@@ -23,7 +23,7 @@ Feature: Fetch all Todos Relating to a Category
       |Project Planning|relating to planning and logistics of projects|TRUE      | test   | jnkac        |False        |
 
 
-  #Error Flow http://localhost:4567/categories/THISISNOTANID/todos
+  #Error Flow
   Scenario Outline: Attempting to fetch all todos relating to a category by providing an incorrect category id
     Given there are no categories with <incorrectId> in the system
     When a user elects to fetch all todos related to a category by providing the category <incorrectId>

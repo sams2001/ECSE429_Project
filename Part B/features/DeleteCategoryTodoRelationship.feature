@@ -5,7 +5,7 @@ Feature: Delete relationship between category and todo
     Background:
         Given the application is running
 
-    #Normal flow: DELETE /todos/:id/categories/:id
+    #Normal flow
     Scenario Outline: Deleting a relationship between an existing todo and category via todos
     Given that category with id <categoryid> exists in the system
     And that todo with id <todoid> exists in the system 
@@ -18,7 +18,7 @@ Feature: Delete relationship between category and todo
       |1|1|
       |3|2|
 
-    #Alternate flow: DELETE /categories/:id/todos/:id
+    #Alternate flow
     Scenario Outline: Deleting a relationship between an existing todo and category via categories
     Given that category with id <categoryid> exists in the system
     And that todo with id <todoid> exists in the system 

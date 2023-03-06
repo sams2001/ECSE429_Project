@@ -2,7 +2,7 @@ Feature: Fetch Todo or Todos via Project
 
   As a user, I want to fetch todos by a project, so that I can view the tasks and their information corresponding to a project
 
-  #Normal Flow: /projects/:id/tasks
+  #Normal Flow:
   Scenario Outline: Fetch todo by a project
     Given todos with ids <taskids> exist in the system
     Given a project with id <projectid> exists with related tasks <taskids>

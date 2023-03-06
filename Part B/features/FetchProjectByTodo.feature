@@ -2,7 +2,7 @@ Feature: Fetch Project or Projects via Todo
 
   As a user, I want to fetch project(s) related to a task, so that I can view the information of a project corresponding to a task.
 
-  #Normal Flow: GET /todos/:id/tasksof
+  #Normal Flow:
   Scenario Outline: Fetch project by a todo
     Given that todo with id <taskid> exists in the system 
     Given a project with id <projectid> exists with related tasks <taskid>
