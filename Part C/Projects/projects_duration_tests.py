@@ -94,7 +94,7 @@ def test_delete_projects(resource,state):
 
 
 @pytest.mark.parametrize('state', ['projects_setup_very_populated', 'projects_setup_populated', 'projects_setup_half_populated', 'projects_setup_empty'])
-def test_update_todos(resource,state):
+def test_update_projects(resource,state):
     process = psutil.Process(os.getpid())
     projects = requests.get(projects_url).json()['projects']
     project_id = projects[0]['id']

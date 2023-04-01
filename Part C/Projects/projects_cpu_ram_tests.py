@@ -36,7 +36,7 @@ def projects_setup_empty():
         for i in range(1,len(projects)): #delete all but one.. basically empty
             projects = projects[i]
             request = requests.delete(projects_url + "/" + projects['id'])
-        todos = requests.get(projects_url).json()['projects']
+        projects = requests.get(projects_url).json()['projects']
 
 def populate_helper(num_to_reach):
     projects = requests.get(projects_url).json()['projects']
@@ -95,7 +95,7 @@ def test_delete_projects():
 
 def test_update_projects():
     process = psutil.Process(os.getpid())
-    projects = requests.get(projects_url).json()['todos']
+    projects = requests.get(projects_url).json()['projects']
     project_id = projects[0]['id']
     print('The CPU usage is: ', psutil.cpu_percent(0.5))
     update = requests.put(projects_url + '/' + project_id,data=json_payload_projects_new,headers=json_header)
