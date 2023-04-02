@@ -20,7 +20,7 @@ json_header = {"Content-Type": "application/json"}
 
 def test_performance_create_category():
 
-    num_objects = [10, 50, 100, 500, 1000]
+    num_objects = [1, 50, 100, 500]
     transaction_time = []
     cpu_percent = []
     memory_available = []
@@ -36,9 +36,6 @@ def test_performance_create_category():
 
             # Create an object with random data
             # Example code for creating a category with random data
-            # title = f"Category {i}"
-            # description = f"This is category {i}"
-            # json_payload = f'{{"title": "{title}", "description": "{description}"}}'
             response = requests.post(url, data=json_payload, headers=json_header)
             assert response.status_code == 201
 
@@ -51,7 +48,7 @@ def test_performance_create_category():
         delta_memory = end_memory - start_memory
 
         transaction_time.append(delta_time)
-        cpu_percent.append(end_cpu_percent)
+        cpu_percent.append(start_cpu_percent)
         memory_available.append(end_memory)
 
     create_category_file = open(os.path.join("test_data", "create_category_file.csv"), "w", newline='')
@@ -73,9 +70,6 @@ def test_performance_delete_category():
 
         # Create n objects to delete
         for i in range(n):
-            # title = f"Category {i}"
-            # description = f"This is category {i}"
-            # json_payload = f'{{"title": "{title}", "description": "{description}"}}'
             response = requests.post(url, data=json_payload, headers=json_header)
             assert response.status_code == 201
 
@@ -98,7 +92,7 @@ def test_performance_delete_category():
         delta_memory = end_memory - start_memory
 
         transaction_time.append(delta_time)
-        cpu_percent.append(end_cpu_percent)
+        cpu_percent.append(start_cpu_percent)
         memory_available.append(end_memory)
 
     create_category_file = open(os.path.join("test_data", "delete_category_file.csv"), "w", newline='')
@@ -119,9 +113,6 @@ def test_performance_update_category():
     for n in num_objects:
         # Create n objects to update
         for i in range(n):
-            # title = f"Category {i}"
-            # description = f"This is category {i}"
-            # json_payload = f'{{"title": "{title}", "description": "{description}"}}'
             response = requests.post(url, data=json_payload, headers=json_header)
             assert response.status_code == 201
         
@@ -131,9 +122,6 @@ def test_performance_update_category():
         start_time = time.time()
 
         for i in range(n):
-            # title = f"New Category {i}"
-            # description = f"This is the updated category {i}"
-            # json_payload = f'{{"title": "{title}", "description": "{description}"}}'
             to_update = requests.get(url).json()['categories'][0]['id']
             response = requests.put(url + "/" + str(to_update), data=json_payload_new, headers=json_header)
             assert response.status_code == 200
@@ -147,7 +135,7 @@ def test_performance_update_category():
         delta_memory = end_memory - start_memory
 
         transaction_time.append(delta_time)
-        cpu_percent.append(end_cpu_percent)
+        cpu_percent.append(start_cpu_percent)
         memory_available.append(end_memory)
 
     create_category_file = open(os.path.join("test_data", "update_category_file.csv"), "w", newline='')
