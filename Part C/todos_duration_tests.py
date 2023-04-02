@@ -5,7 +5,8 @@ import os
 from time import sleep
 
 """
-Run tests with `pytest --durations=0 todos_tests.py` to see the duration of each test
+Run tests with `pytest --durations=0 todos_duration_tests.py` to see the duration of each test
+Install pytest-monitor 
 """
 
 todos_url = 'http://localhost:4567/todos'
@@ -31,23 +32,14 @@ json_header = {"Content-Type": "application/json"}
 create, delete or change todo object at different states
 """
 
-@pytest.fixture
-def todos_setup_empty(resource):
-    todos = requests.get(todos_url).json()['todos']
-    while(len(todos) != 1):
-        for i in range(1,len(todos)): #delete all but one.. basically empty
-            todo = todos[i]
-            request = requests.delete(todos_url + "/" + todo['id'])
-        todos = requests.get(todos_url).json()['todos']
-    assert len(requests.get(todos_url).json()['todos']) == 1
-
 
 def populate_helper(num_to_reach):
+    __tracebackhide__ = True
     todos = requests.get(todos_url).json()['todos']
     num_todos = len(todos)
     while(len(todos) != num_to_reach):
         if (num_todos>num_to_reach):
-            for i in range(num_todos-num_to_reach): 
+            for i in range(0,num_todos-num_to_reach): 
                 todo = todos[i]
                 request = requests.delete(todos_url + "/" + todo['id'])
         else:
@@ -59,50 +51,150 @@ def populate_helper(num_to_reach):
 
 
 @pytest.fixture
+def todos_setup_empty(resource):
+    populate_helper(1)
+
+@pytest.fixture
 def todos_setup_half_populated(resource):
     populate_helper(50)
 
 @pytest.fixture
 def todos_setup_populated(resource):
-    populate_helper(100) 
+    populate_helper(100)
 
 @pytest.fixture
 def todos_setup_very_populated(resource):
     populate_helper(500)
 
 
-@pytest.mark.parametrize('state', ['todos_setup_very_populated', 'todos_setup_populated', 'todos_setup_half_populated', 'todos_setup_empty'])
-def test_post_todos(resource, state):
-    process = psutil.Process(os.getpid())
+#parameterizing fixtures causes errors
+"""
+post at different states
+"""
+def test_post_todos_empty(resource, todos_setup_empty):
+    length = len(requests.get(todos_url).json()['todos'])
     response = requests.post(todos_url,data=json_payload_todos,headers=json_header)
-    print('The CPU usage is: ', process.cpu_percent(0.5))
-    print('RAM Used (GB):', str(process.memory_info().rss))
-
     assert response.status_code == 201
-    sleep(0.1) #cpu takes 0.5s sample - make sure there's no overlap with other function calls
 
+def test_post_todos_half_populated(resource, todos_setup_half_populated):
+    length = len(requests.get(todos_url).json()['todos'])
+    response = requests.post(todos_url,data=json_payload_todos,headers=json_header)
+    assert response.status_code == 201
 
-@pytest.mark.parametrize('state', ['todos_setup_very_populated', 'todos_setup_populated', 'todos_setup_half_populated', 'todos_setup_empty'])
-def test_delete_todos(resource,state):
-    process = psutil.Process(os.getpid())
+def test_post_todos_populated(resource, todos_setup_populated):
+    length = len(requests.get(todos_url).json()['todos'])
+    response = requests.post(todos_url,data=json_payload_todos,headers=json_header)
+    assert response.status_code == 201
+
+def test_post_todos_very_populated(resource, todos_setup_very_populated):
+    length = len(requests.get(todos_url).json()['todos'])
+    response = requests.post(todos_url,data=json_payload_todos,headers=json_header)
+    assert response.status_code == 201
+
+"""
+delete at different states
+"""
+def test_delete_todos_empty(resource,todos_setup_empty):
     todos = requests.get(todos_url).json()['todos']
     todo_id = todos[0]['id']
     delete = requests.delete(todos_url + "/" + todo_id)
-    print('The CPU usage is: ', process.cpu_percent(0.5))
-    print('RAM Used (GB):', str(process.memory_info().rss))
-
     assert delete.status_code == 200
-    sleep(0.1) #cpu takes 0.5s sample - make sure there's no overlap with other function calls
+    
+def test_delete_todos_half_populated(resource,todos_setup_half_populated):
+    todos = requests.get(todos_url).json()['todos']
+    todo_id = todos[0]['id']
+    delete = requests.delete(todos_url + "/" + todo_id)
+    assert delete.status_code == 200
+    
+def test_delete_todos_populated(resource,todos_setup_populated):
+    todos = requests.get(todos_url).json()['todos']
+    todo_id = todos[0]['id']
+    delete = requests.delete(todos_url + "/" + todo_id)
+    assert delete.status_code == 200
 
+def test_delete_todos_very_populated(resource,todos_setup_very_populated):
+    todos = requests.get(todos_url).json()['todos']
+    todo_id = todos[0]['id']
+    delete = requests.delete(todos_url + "/" + todo_id)
+    assert delete.status_code == 200
 
-@pytest.mark.parametrize('state', ['todos_setup_very_populated', 'todos_setup_populated', 'todos_setup_half_populated', 'todos_setup_empty'])
-def test_update_todos(resource,state):
-    process = psutil.Process(os.getpid())
+"""
+update at different states
+"""
+def test_update_todos_empty(resource,todos_setup_empty):
     todos = requests.get(todos_url).json()['todos']
     todo_id = todos[0]['id']
     update = requests.put(todos_url + '/' + todo_id,data=json_payload_todos_new,headers=json_header)
-    print('The CPU usage is: ', process.cpu_percent(0.5))
-    print('RAM Used (GB):', str(process.memory_info().rss))
-
     assert update.status_code == 200
-    sleep(0.1)
+    
+def test_update_todos_half_populated(resource,todos_setup_half_populated):
+    todos = requests.get(todos_url).json()['todos']
+    todo_id = todos[0]['id']
+    update = requests.put(todos_url + '/' + todo_id,data=json_payload_todos_new,headers=json_header)
+    assert update.status_code == 200
+
+def test_update_todos_populated(resource,todos_setup_populated):
+    todos = requests.get(todos_url).json()['todos']
+    todo_id = todos[0]['id']
+    update = requests.put(todos_url + '/' + todo_id,data=json_payload_todos_new,headers=json_header)
+    assert update.status_code == 200
+
+def test_update_todos_very_populated(resource,todos_setup_very_populated):
+    todos = requests.get(todos_url).json()['todos']
+    todo_id = todos[0]['id']
+    update = requests.put(todos_url + '/' + todo_id,data=json_payload_todos_new,headers=json_header)
+    assert update.status_code == 200
+
+
+@pytest.mark.skip
+def test_update_todos_helper(num_to_reach):
+        __tracebackhide__ = True
+        for i in range(num_to_reach):
+            todo_id = requests.get(todos_url).json()['todos'][i]['id']
+            update = requests.put(todos_url + '/' + todo_id,data=json_payload_todos_new,headers=json_header)
+            assert update.status_code == 200
+
+@pytest.mark.skip
+def test_delete_todos_helper(num_to_reach):
+    __tracebackhide__ = True
+    for i in range(num_to_reach):
+        todo_id = requests.get(todos_url).json()['todos'][0]['id']
+        response = requests.delete(todos_url + "/" + todo_id)
+        assert response.status_code == 200
+
+
+"""
+post varying amount of objects
+"""
+@pytest.mark.parametrize('num', ['1', '50', '100', '500'])
+def test_post_num_todos(resource,todos_setup_empty,num):
+    for i in range(int(num)):
+        todo_id = requests.get(todos_url).json()['todos'][i]['id']
+        response = requests.post(todos_url,data=json_payload_todos,headers=json_header)
+        assert response.status_code == 201
+
+"""
+update varying amount of objects
+"""
+def test_update_1_todos(resource,todos_setup_empty):
+    test_update_todos_helper(1)
+def test_update_50_todos(resource,todos_setup_half_populated):
+    test_update_todos_helper(50)
+def test_update_100_todos(resource,todos_setup_populated):
+    test_update_todos_helper(100)
+def test_update_500_todos(resource,todos_setup_very_populated):
+    test_update_todos_helper(500)
+    
+
+
+"""
+delete varying amount of objects
+"""
+def test_delete_1_todos(resource,todos_setup_empty):
+    test_delete_todos_helper(1)
+def test_delete_50_todos(resource,todos_setup_half_populated):
+    test_delete_todos_helper(50)
+def test_delete_100_todos(resource,todos_setup_populated):
+    test_delete_todos_helper(100)
+def test_delete_500_todos(resource,todos_setup_very_populated):
+    test_delete_todos_helper(500)

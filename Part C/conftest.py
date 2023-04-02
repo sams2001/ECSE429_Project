@@ -4,7 +4,7 @@ import time
 import pytest
 import requests
 
-@pytest.fixture()
+@pytest.fixture
 def resource():
     print("set up")
 
