@@ -1,9 +1,12 @@
-import pytest
 import requests
 import os
 import psutil
 from time import sleep
 
+
+"""
+Run tests with python3 todos_cpu_ram_tests.py
+"""
 todos_url = 'http://localhost:4567/todos'
 
 json_payload_todos = """
@@ -48,8 +51,6 @@ def populate_helper(num_to_reach):
             for i in range(num_to_reach-num_todos):
                 response = requests.post(todos_url,data=json_payload_todos,headers=json_header)
         todos = requests.get(todos_url).json()['todos']
-
-    #assert len(todos) == num_to_reach
 
 
 def todos_setup_half_populated():
