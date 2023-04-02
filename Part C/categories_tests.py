@@ -27,8 +27,8 @@ def test_performance_create_category():
 
     for n in num_objects:
 
-        process = psutil.Process()
-        start_cpu_percent = process.cpu_percent()
+        process = psutil.Process(os.getpid())
+        start_cpu_percent = process.cpu_percent(0.5)
         start_memory = process.memory_info().rss / 1024 / 1024
         start_time = time.time()
 
@@ -43,7 +43,7 @@ def test_performance_create_category():
             assert response.status_code == 201
 
         end_time = time.time()
-        end_cpu_percent = process.cpu_percent()
+        end_cpu_percent = process.cpu_percent(0.5)
         end_memory = process.memory_info().rss / 1024 / 1024
 
         delta_time = end_time - start_time
@@ -51,8 +51,8 @@ def test_performance_create_category():
         delta_memory = end_memory - start_memory
 
         transaction_time.append(delta_time)
-        cpu_percent.append(delta_cpu_percent)
-        memory_available.append(delta_memory)
+        cpu_percent.append(end_cpu_percent)
+        memory_available.append(end_memory)
 
     create_category_file = open(os.path.join("test_data", "create_category_file.csv"), "w", newline='')
     writer = csv.writer(create_category_file)
@@ -79,8 +79,8 @@ def test_performance_delete_category():
             response = requests.post(url, data=json_payload, headers=json_header)
             assert response.status_code == 201
 
-        process = psutil.Process()
-        start_cpu_percent = process.cpu_percent()
+        process = psutil.Process(os.getpid())
+        start_cpu_percent = process.cpu_percent(0.5)
         start_memory = process.memory_info().rss / 1024 / 1024
         start_time = time.time()
 
@@ -90,7 +90,7 @@ def test_performance_delete_category():
             assert response.status_code == 200
 
         end_time = time.time()
-        end_cpu_percent = process.cpu_percent()
+        end_cpu_percent = process.cpu_percent(0.5)
         end_memory = process.memory_info().rss / 1024 / 1024
 
         delta_time = end_time - start_time
@@ -98,8 +98,8 @@ def test_performance_delete_category():
         delta_memory = end_memory - start_memory
 
         transaction_time.append(delta_time)
-        cpu_percent.append(delta_cpu_percent)
-        memory_available.append(delta_memory)
+        cpu_percent.append(end_cpu_percent)
+        memory_available.append(end_memory)
 
     create_category_file = open(os.path.join("test_data", "delete_category_file.csv"), "w", newline='')
     writer = csv.writer(create_category_file)
@@ -125,8 +125,8 @@ def test_performance_update_category():
             response = requests.post(url, data=json_payload, headers=json_header)
             assert response.status_code == 201
         
-        process = psutil.Process()
-        start_cpu_percent = process.cpu_percent()
+        process = psutil.Process(os.getpid())
+        start_cpu_percent = process.cpu_percent(0.5)
         start_memory = process.memory_info().rss / 1024 / 1024
         start_time = time.time()
 
@@ -139,7 +139,7 @@ def test_performance_update_category():
             assert response.status_code == 200
         
         end_time = time.time()
-        end_cpu_percent = process.cpu_percent()
+        end_cpu_percent = process.cpu_percent(0.5)
         end_memory = process.memory_info().rss / 1024 / 1024
 
         delta_time = end_time - start_time
@@ -147,8 +147,8 @@ def test_performance_update_category():
         delta_memory = end_memory - start_memory
 
         transaction_time.append(delta_time)
-        cpu_percent.append(delta_cpu_percent)
-        memory_available.append(delta_memory)
+        cpu_percent.append(end_cpu_percent)
+        memory_available.append(end_memory)
 
     create_category_file = open(os.path.join("test_data", "update_category_file.csv"), "w", newline='')
     writer = csv.writer(create_category_file)
