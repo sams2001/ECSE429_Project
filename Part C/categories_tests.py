@@ -61,7 +61,7 @@ def test_performance_create_category():
 
 def test_performance_delete_category():
 
-    num_objects = [10, 50, 100, 500, 1000]
+    num_objects = [1, 50, 100, 500]
     transaction_time = []
     cpu_percent = []
     memory_available = []
@@ -105,7 +105,7 @@ def test_performance_delete_category():
 
 def test_performance_update_category():
     
-    num_objects = [10, 50, 100, 500, 1000]
+    num_objects = [1, 50, 100, 500]
     transaction_time = []
     cpu_percent = []
     memory_available = []
