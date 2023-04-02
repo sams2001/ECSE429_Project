@@ -33,6 +33,8 @@ create, delete or change projects object at different states
 @pytest.fixture
 def projects_setup_empty(resource):
     projects = requests.get(projects_url).json()['projects']
+    print(len(projects))
+    if (len(projects)==0):print("lopoko")
     while(len(projects) != 1):
         for i in range(1,len(projects)): #delete all but one.. basically empty
             project = projects[i]
@@ -44,6 +46,8 @@ def projects_setup_empty(resource):
 def populate_helper(num_to_reach):
     projects = requests.get(projects_url).json()['projects']
     num_projects = len(projects)
+    print(len(project))
+    print(num_to_reach)
     while(len(projects) != num_to_reach):
         if (num_projects>num_to_reach):
             for i in range(num_projects-num_to_reach): 
